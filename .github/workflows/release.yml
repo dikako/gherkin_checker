@@ -33,9 +33,13 @@ jobs:
         run: |
           gem build *.gemspec
 
+      - name: Set up RubyGems credentials
+        run: |
+          mkdir -p ~/.gem  # Create the .gem directory if it doesn't exist
+          echo "---" > ~/.gem/credentials
+          echo ":rubygems_api_key: ${{ secrets.RUBYGEMS_API_KEY }}" >> ~/.gem/credentials
+          chmod 600 ~/.gem/credentials
+
       - name: Publish gem to RubyGems
         run: |
-          echo "---" > ~/.gem/credentials
-          echo ":rubygems_api_key: ${RUBYGEMS_API_KEY}" >> ~/.gem/credentials
-          chmod 600 ~/.gem/credentials
           gem push *.gem

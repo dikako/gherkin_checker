@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gherkin_checker (1.1.4)
+    gherkin_checker (1.1.5)
 
 GEM
   remote: https://rubygems.org/
