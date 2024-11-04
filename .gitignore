@@ -1,2 +1,4 @@
 .env
 .idea
+gherkin_checker.yml
+*.gem
