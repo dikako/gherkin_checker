@@ -21,6 +21,10 @@ jobs:
           ruby-version: '3.0'  # Adjust this to the version you're using
           bundler-cache: true
 
+      - name: Remove frozen mode
+        run: |
+          bundle config set frozen false
+
       - name: Install dependencies
         run: |
           bundle install
