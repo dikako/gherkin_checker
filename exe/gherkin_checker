@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "gherkin_checker"
+
+# Initialize the checker with default config or custom path if provided
+checker = GherkinChecker::Checker.new("gherkin_checker.yml")
+
+# Run the check and print the results
+checker.check_feature_files
+
