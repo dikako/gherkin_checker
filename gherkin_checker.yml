@@ -1,8 +1,0 @@
-#feature_files_path: './path/to/your/features'
-mandatory_tags:
-  one_of:
-    - "Automated"
-    - "CanBeAutomate"
-    - "NotAutomate"
-  must_be:
-    - "iOS"
