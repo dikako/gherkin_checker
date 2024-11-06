@@ -1,22 +1,44 @@
 # GherkinChecker
 
-.feature file checker
+**GherkinChecker** is a tool for validating and enforcing rules on Gherkin `.feature` files. It allows users to set custom tag and structure requirements for feature files to maintain consistency and quality in test scenarios.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Install the gem and add it to your application's Gemfile by running:
 
-Install the gem and add to the application's Gemfile by executing:
-
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+```sh
+gem install gherkin_checker
+````
 
 ## Usage
 
-TODO: Write usage instructions here
+After successful installation, navigate to your project repository and create a configuration file named gherkin_checker.yml. Define your custom rules for Gherkin checking within this file. Below is a sample configuration format:
+
+```yaml
+feature_files_path: '{to/your/path}'
+mandatory_tags:
+  must_be:
+    - "Text1"
+  one_of:
+    - "Text2"
+    - "Text3"
+    - "Text4"
+```
+
+**Configuration Parameters**
+
+- **feature_files_path**: Specifies the path to the directory containing Gherkin feature files.
+- **mandatory_tags**:
+    - **must_be**: Tags that must be present in every feature file.
+    - **one_of**: Tags where at least one must be present in each feature file.
+
+To run Gherkin Checker on your project, execute the following command in the terminal:
+
+```sh
+gherkin_checker
+````
+
+This command will check your feature files according to the rules defined in gherkin_checker.yml and provide feedback based on any discrepancies found.
 
 ## Development
 
@@ -26,7 +48,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/gherkin_checker. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/gherkin_checker/blob/main/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/dikako/gherkin_checker. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/gherkin_checker/blob/main/CODE_OF_CONDUCT.md).
 
 ## License
 
