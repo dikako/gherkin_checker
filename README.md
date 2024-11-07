@@ -1,4 +1,4 @@
-# GherkinChecker
+# gherkin_checker
 
 **GherkinChecker** is a tool for validating and enforcing rules on Gherkin `.feature` files. It allows users to set custom tag and structure requirements for feature files to maintain consistency and quality in test scenarios.
 
