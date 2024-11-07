@@ -5,14 +5,17 @@ require "yaml"
 require "set"
 
 require_relative "gherkin_checker/version"
+require_relative "utils/utils"
 
 module GherkinChecker
   # Checker class
   class Checker
     def initialize(config_file = "gherkin_checker.yml")
       unless File.exist?(config_file)
-        log_message("Error: Configuration file #{config_file} not found.", level: :error)
-        exit(1) # Exit with a status of 1 to indicate an error
+        log_message("Configuration file #{config_file} not found. Generating....", level: :warn)
+        Utils.generate_gherkin_checker_yml(config_file)
+        log_message("Generate gherkin_checker.yml file success at #{File.expand_path(config_file)}, please change the configuration first before running.", level: :warn)
+        exit(1)
       end
 
       @config = YAML.load_file(config_file)
