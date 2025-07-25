@@ -10,23 +10,20 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
-    strategy:
-      matrix:
-        ruby:
-          - '3.4.1'
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Remove frozen mode
-      run: |
-        bundle config set frozen false
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.1'
+          bundler-cache: true
 
-    - name: Run the default task
-      run: bundle exec rake
+      - name: Remove frozen mode
+        run: |
+          bundle config set frozen false
+
+      - name: Run the default task
+        run: bundle exec rake
