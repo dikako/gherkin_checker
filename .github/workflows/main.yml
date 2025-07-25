@@ -23,5 +23,8 @@ jobs:
       with:
         ruby-version: ${{ matrix.ruby }}
         bundler-cache: true
+        # Disable frozen mode in CI
+        bundler-config: |
+          set frozen false
     - name: Run the default task
       run: bundle exec rake
