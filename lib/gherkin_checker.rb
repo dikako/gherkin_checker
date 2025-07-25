@@ -2,7 +2,7 @@
 
 require "find"
 require "yaml"
-require "set"
+require "gherkin/parser"
 
 require_relative "gherkin_checker/version"
 
@@ -50,18 +50,20 @@ module GherkinChecker
       return log_one_of_tags_warning if @one_of_tags.nil?
 
       errors = []
-      extract_scenarios_with_tags(file).each do |data|
-        is_tags_nil = data[:tags].nil?
-        tags = data[:tags]
+      extract_scenario_data(file).each do |data|
+        is_tags_nil = data[:scenario_tags].nil?
+        tags = data[:scenario_tags]
         file_line = data[:file_line]
-        scenario = data[:scenario]
+        scenario = data[:scenario_name]
+        error = data[:error]
 
         if is_tags_nil
           errors << {
             check: :one_of_tags,
             file_line: file_line,
-            scenario: scenario,
-            tags: tags
+            scenario_name: scenario,
+            scenario_tags: tags,
+            error: error
           }
         end
 
@@ -72,8 +74,9 @@ module GherkinChecker
         errors << {
           check: :one_of_tags,
           file_line: file_line,
-          scenario: scenario,
-          tags: tags
+          scenario_name: scenario,
+          scenario_tags: tags,
+          error: error
         }
       end
 
@@ -84,18 +87,20 @@ module GherkinChecker
       return log_must_be_tags_warning if @must_be_tags.nil?
 
       errors = []
-      extract_scenarios_with_tags(file).each do |data|
-        is_tags_nil = data[:tags].nil?
-        tags = data[:tags]
+      extract_scenario_data(file).each do |data|
+        is_tags_nil = data[:scenario_tags].nil?
+        tags = data[:scenario_tags]
         file_line = data[:file_line]
-        scenario = data[:scenario]
+        scenario = data[:scenario_name]
+        error = data[:error]
 
         if is_tags_nil
           errors << {
             check: :must_be_tags,
             file_line: file_line,
-            scenario: scenario,
-            tags: tags
+            scenario_name: scenario,
+            scenario_tags: tags,
+            error: error
           }
         end
 
@@ -106,8 +111,9 @@ module GherkinChecker
         errors << {
           check: :must_be_tags,
           file_line: file_line,
-          scenario: scenario,
-          tags: tags
+          scenario_name: scenario,
+          scenario_tags: tags,
+          error: error
         }
       end
 
@@ -140,20 +146,25 @@ module GherkinChecker
       else
         log_message("Gherkin Checker found Error:", level: :error)
         errors.each do |error|
-          tags = error[:tags]
-          tags = error[:tags].nil? ? "Tagging not set" : "Just found '#{tags}'"
+          error_message = error[:error]
+          if error_message.nil?
+            scenario_tags = error[:scenario_tags]
+            tags = scenario_tags
+            tags = scenario_tags.nil? ? "Tagging not set" : "Just found '#{tags}'"
 
-          message = case error[:check]
-                    when :one_of_tags
-                      "one_of_tags '#{@one_of_tags}' not found!, #{tags}"
-                    when :must_be_tags
-                      "must_be_tags '#{@must_be_tags}' not found!, #{tags}"
-                    else
-                      "error undefined"
-                    end
+            message = case error[:check]
+                      when :one_of_tags
+                        "one_of_tags '#{@one_of_tags}' not found!, #{tags}"
+                      when :must_be_tags
+                        "must_be_tags '#{@must_be_tags}' not found!, #{tags}"
+                      else
+                        "error undefined"
+                      end
 
-          # Log error to console
-          log_message("#{error[:file_line]}: #{error[:scenario]} - #{message}", level: :error)
+            log_message("#{error[:file_line]}: #{error[:scenario_name]} - #{message}", level: :error)
+          else
+            log_message("Error: #{error_message}", level: :error)
+          end
         end
       end
     end
@@ -175,33 +186,48 @@ module GherkinChecker
       puts "#{color}#{message}#{colors[:reset]}"
     end
 
-    def extract_scenarios_with_tags(file)
-      scenarios = []
-      current_tags = []
+    def extract_scenario_data(file)
+      gherkin_parser = Gherkin::Parser.new
+      scenario_data = []
 
-      lines = File.readlines(file)
+      begin
+        content = File.read(file)
+        document = gherkin_parser.parse(content)
+        feature = document.feature
+        feature_name = feature.name
+        feature_tags = feature.tags.map(&:name)
 
-      lines.each_with_index do |line, index|
-        # Remove leading/trailing whitespace
-        line.strip!
+        feature.children.each do |child|
+          raise "Error: read scenario data" unless child.respond_to?(:scenario) && child.scenario
 
-        if line.start_with?("@")
-          # Capture tags if line contains tags
-          current_tags = line.scan(/@(\w+)/).flatten
-        elsif line.start_with?("Scenario:", "Scenario Outline:")
-          # Capture scenario names
-          scenario_name = line.sub(/^Scenario(?: Outline)?:\s*/, "").strip
-          # Store scenario with current tags (nil if no tags), then reset tags for next scenario
-          scenarios << {
-            file_line: "#{file}:#{index + 1}",
-            scenario: scenario_name,
-            tags: current_tags.empty? ? nil : current_tags.dup
+          scenario = child.scenario
+          scenario_name = scenario.name
+          scenario_tags = scenario.tags.map(&:name)
+          scenario_tags = scenario_tags.map { |tag| tag.delete_prefix("@") }
+          location_line = scenario.location.line
+          location_column = scenario.location.column
+
+          scenario_data << {
+            feature_name: feature_name,
+            feature_tags: feature_tags,
+            file_line: "#{file}:#{location_line}:#{location_column}",
+            scenario_name: scenario_name,
+            scenario_tags: scenario_tags,
+            error: nil
           }
-          current_tags = [] # Reset tags for next scenario
         end
+      rescue StandardError => e
+        scenario_data << {
+          feature_name: nil,
+          feature_tags: nil,
+          file_line: nil,
+          scenario_name: nil,
+          scenario_tags: nil,
+          error: e.message
+        }
       end
 
-      scenarios
+      scenario_data
     end
   end
 end
