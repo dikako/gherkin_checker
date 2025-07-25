@@ -24,7 +24,10 @@ jobs:
 
       - name: Remove frozen mode
         run: |
-          bundle config set frozen false
+          rm -f .bundle/config
+          bundle config set --local path 'vendor/bundle'
+          bundle config set --local frozen false
+          bundle install --jobs 4 --retry 3
 
       - name: Install dependencies
         run: |
