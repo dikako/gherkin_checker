@@ -3,6 +3,12 @@
 
 require "gherkin_checker"
 
+# Check for version flag
+if ARGV.include?("-v") || ARGV.include?("--version")
+  puts "GherkinChecker #{GherkinChecker::VERSION}"
+  exit 0
+end
+
 # Initialize the checker with default config or custom path if provided
 checker = GherkinChecker::Checker.new("gherkin_checker.yml")
 
