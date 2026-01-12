@@ -1,4 +1,8 @@
 .env
 .idea
 gherkin_checker.yml
+features/
 *.gem
+run.sh
+gc-formatter.log
+gc.log
