@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    tags:
+      - 'v*'
   release:
     types: [published]
   workflow_dispatch:
@@ -31,7 +33,7 @@ jobs:
   release:
     needs: test
     runs-on: ubuntu-latest
-    if: success() && (github.event_name == 'release' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
+    if: success() && (github.event_name == 'release' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))))
 
     steps:
       - name: Check out code
