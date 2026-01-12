@@ -6,3 +6,5 @@ features/
 run.sh
 gc-formatter.log
 gc.log
+.rspec_status
+
