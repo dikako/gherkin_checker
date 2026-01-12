@@ -1,13 +1,14 @@
 PATH
   remote: .
   specs:
-    gherkin_checker (1.1.7)
+    gherkin_checker (1.2.0)
+      cucumber-gherkin (~> 33.0)
 
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.2)
-    cucumber-gherkin (33.0.0)
+    cucumber-gherkin (33.1.0)
       cucumber-messages (> 25, < 29)
     cucumber-messages (28.1.0)
     diff-lcs (1.5.1)
@@ -55,7 +56,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  cucumber-gherkin (~> 33.0)
   gherkin_checker!
   rake (~> 13.0)
   rspec (~> 3.0)

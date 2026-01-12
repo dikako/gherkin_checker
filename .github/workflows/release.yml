@@ -9,8 +9,29 @@ on:
   workflow_dispatch:
 
 jobs:
-  release:
+  test:
+    name: Run Tests & Lint
     runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4.1'
+          bundler-cache: true
+
+      - name: Run Tests
+        run: bundle exec rspec
+
+      - name: Run Rubocop
+        run: bundle exec rubocop
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: success() && (github.event_name == 'release' || github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
 
     steps:
       - name: Check out code

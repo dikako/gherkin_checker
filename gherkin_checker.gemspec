@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # gherkin_checker.gemspec
 
 require_relative "lib/gherkin_checker/version"
@@ -21,4 +22,10 @@ Gem::Specification.new do |spec|
 
   spec.metadata["rubygems_mfa_required"] = "true"
   spec.metadata["source_code_uri"] = "https://github.com/dikako/gherkin_checker"
+
+  spec.add_dependency "cucumber-gherkin", "~> 33.0"
+
+  spec.add_development_dependency "rake", "~> 13.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "rubocop", "~> 1.21"
 end

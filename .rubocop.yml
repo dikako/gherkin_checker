@@ -221,5 +221,16 @@ Style/SuperWithArgsParentheses: # new in 1.58
   Enabled: true
 Style/SwapValues: # new in 1.1
   Enabled: true
+  Enabled: true
 Style/YAMLFileRead: # new in 1.53
   Enabled: true
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/**/*"
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 25
